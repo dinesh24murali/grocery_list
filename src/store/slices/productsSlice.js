@@ -2,7 +2,9 @@ import {createSlice} from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 
-import {dbKeys} from '../../constants/constants';
+import {dbKeys, SELECTED_FILTER} from '../../constants/constants';
+import defaultProductList from '../data/productList';
+import defaultCategoryList from '../data/categoryList';
 
 export const productsSlice = createSlice({
   name: 'products',
@@ -218,10 +220,13 @@ export const editProduct = payload => {
   };
 };
 
-export const filterProducts = ({category, searchText}) => {
-  return async dispatch => {
+export const filterProducts = ({category, searchText, groceryListId}) => {
+  return async (dispatch, getState) => {
     try {
       let temp = await AsyncStorage.getItem(dbKeys.productList);
+      const state = getState();
+      const {groceryLists} = state.grocery;
+      const currentList = groceryLists.find(item => item.id === groceryListId);
       temp = temp ? JSON.parse(temp) : [];
       dispatch(
         setItem({
@@ -229,13 +234,22 @@ export const filterProducts = ({category, searchText}) => {
           value: category,
         }),
       );
-      let isCategoryFilterEmpty = false;
+      let isCategoryFilterEmpty = false,
+        isFilterBySelectedItems = false;
       if (category) {
         isCategoryFilterEmpty = Object.keys(category).find(item => {
           return category[item] ? true : false;
         });
+        isFilterBySelectedItems = category[SELECTED_FILTER] ? true : false;
       }
-      if (isCategoryFilterEmpty) {
+      if (isFilterBySelectedItems && currentList) {
+        const existingProductList = currentList.products.map(
+          item => item.product.id,
+        );
+        temp = temp.filter(item => {
+          return existingProductList.includes(item.id);
+        });
+      } else if (isCategoryFilterEmpty) {
         temp = temp.filter(item => category[item.category]);
       }
       if (searchText) {
@@ -252,6 +266,63 @@ export const filterProducts = ({category, searchText}) => {
         }),
       );
     } catch (e) {
+      return '';
+    }
+  };
+};
+
+const prepareCategoryList = () => {
+  const payload = defaultCategoryList.map(item => {
+    return {
+      id: uuid.v4(),
+      name: item.name,
+    };
+  });
+  return payload;
+};
+
+const prepareProductList = categoryMap => {
+  const payload = defaultProductList.map(item => {
+    return {
+      id: uuid.v4(),
+      name: item.name,
+      unit: item.unit,
+      category: categoryMap[item.category] ? categoryMap[item.category] : 'Groceries',
+    };
+  });
+  return payload;
+};
+
+export const resetProducts = callback => {
+  return async (dispatch) => {
+    try {
+      console.log(" What the hell ")
+      const newCategoryList = prepareCategoryList();
+      const newCategoryListMap = {};
+      newCategoryList.forEach(item => {
+        newCategoryListMap[item.name] = item.id;
+      });
+      const newProductList = prepareProductList(newCategoryListMap);
+
+      await AsyncStorage.setItem(
+        dbKeys.productList,
+        JSON.stringify(newProductList),
+      );
+      await AsyncStorage.setItem(
+        dbKeys.categoryList,
+        JSON.stringify(newCategoryList),
+      );
+      let groceryList = await AsyncStorage.getItem(dbKeys.groceryList);
+      groceryList = groceryList ? JSON.parse(groceryList) : [];
+      for (const list in groceryList) {
+        await AsyncStorage.removeItem(list.id);
+      }
+      await AsyncStorage.removeItem(dbKeys.groceryList);
+      dispatch(fetchCategories());
+      dispatch(fetchProducts());
+      if (callback) callback();
+    } catch (e) {
+      console.log(" What the error ", e)
       return '';
     }
   };

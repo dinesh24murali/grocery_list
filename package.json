@@ -8,8 +8,9 @@
     "build": "react-native build-android --mode=\"release\" -- --stacktrace",
     "run-release": "react-native run-android --mode=\"release\"",
     "ios": "react-native run-ios",
+    "doctor": "react-native doctor",
     "lint": "eslint .",
-    "start": "react-native start",
+    "start": "react-native start --reset-cache",
     "test": "jest"
   },
   "dependencies": {

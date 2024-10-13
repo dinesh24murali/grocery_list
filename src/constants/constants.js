@@ -34,3 +34,5 @@ export const units = {
   COUNT: 'count',
   OTHERS: 'others',
 };
+
+export const SELECTED_FILTER = 'SELECTED_FILTER';

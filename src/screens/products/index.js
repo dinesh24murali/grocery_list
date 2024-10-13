@@ -1,6 +1,14 @@
 import React, {useEffect, useMemo, useState, useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {StyleSheet, Text, FlatList, View, Alert} from 'react-native';
+
+import {
+  ToastAndroid,
+  StyleSheet,
+  Text,
+  FlatList,
+  View,
+  Alert,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useFocusEffect} from '@react-navigation/native';
 
@@ -9,6 +17,7 @@ import {
   fetchProducts,
   deleteProduct,
   filterProducts,
+  resetProducts,
 } from '../../store/slices/productsSlice';
 import IconButton from '../../components/Button/IconButton';
 import TextSearch from '../../components/TextSearch/TextSearch';
@@ -54,6 +63,7 @@ function Index({
   onGetProducts,
   onDeleteProduct,
   onFilterProducts,
+  onReset,
   filteredProducts,
   filterCategories,
 }) {
@@ -129,8 +139,20 @@ function Index({
     onFilterProducts({category: filterCategories, searchText: value});
   };
 
+  const onResetProducts = () => {
+    onReset();
+  };
+
   return (
     <SafeAreaView style={styles.productContainer}>
+      <View style={styles.actions}>
+        <IconButton onPress={() => onResetProducts()}>
+          <View style={flexStyles.flexAlignCenter}>
+            <Icon color="red" name="recycle" size={22} />
+            <Text style={formStyles.btnText}>Reset</Text>
+          </View>
+        </IconButton>
+      </View>
       <BadgeFilter
         list={categories}
         onChange={value => onSelect(value)}
@@ -181,6 +203,12 @@ const styles = StyleSheet.create({
     marginTop: 4,
     paddingHorizontal: 24,
   },
+  actions: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
   sectionTitle: {
     fontSize: 24,
     fontWeight: '600',
@@ -215,6 +243,9 @@ const ProductsContainer = ({navigation}) => {
   const filteredProducts = useSelector(
     state => state.products.filteredProducts,
   );
+  console.log({
+    categories,
+  });
   const filterCategories = useSelector(
     state => state.products.filterCategories,
   );
@@ -245,12 +276,24 @@ const ProductsContainer = ({navigation}) => {
     dispatch(filterProducts(payload));
   };
 
+  const onReset = () => {
+    dispatch(
+      resetProducts(() => {
+        ToastAndroid.show(
+          'Successfully reset list',
+          ToastAndroid.SHORT,
+        );
+      }),
+    );
+  };
+
   return (
     <Index
       onGetCategory={onGetCategory}
       onGetProducts={onGetProducts}
       onDeleteProduct={onDeleteProduct}
       onFilterProducts={onFilterProducts}
+      onReset={onReset}
       categories={categories}
       categoryLabel={categoryLabel}
       filterCategories={filterCategories}

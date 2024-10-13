@@ -97,7 +97,7 @@ export const fetchGroceryLists = () => {
 export const createGroceryLists = payload => {
   return async dispatch => {
     try {
-      const {name, isArchived, selectedProducts,callback} = payload;
+      const {name, isArchived, selectedProducts, callback} = payload;
       const id = uuid.v4();
       let data = await AsyncStorage.getItem(dbKeys.groceryList);
       data = data ? JSON.parse(data) : [];
@@ -259,6 +259,24 @@ export const clearGroceryList = id => {
         };
       });
       await AsyncStorage.setItem(id, JSON.stringify(temp));
+    } catch (e) {
+      return '';
+    }
+  };
+};
+
+export const onDeleteGroceryList = (id, callback) => {
+  return async () => {
+    try {
+      let groceryList = await AsyncStorage.getItem(dbKeys.groceryList);
+      groceryList = groceryList ? JSON.parse(groceryList) : [];
+      groceryList = groceryList.filter(item => item.id !== id);
+      await AsyncStorage.setItem(
+        dbKeys.groceryList,
+        JSON.stringify(groceryList),
+      );
+      await AsyncStorage.removeItem(id);
+      if (callback) callback();
     } catch (e) {
       return '';
     }
