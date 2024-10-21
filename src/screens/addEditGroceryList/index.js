@@ -32,7 +32,7 @@ import {
   fetchGroceryLists,
   onDeleteGroceryList,
 } from '../../store/slices/grocerySlice';
-import {units,SELECTED_FILTER} from '../../constants/constants';
+import {units, SELECTED_FILTER} from '../../constants/constants';
 import theme from '../../constants/theme';
 
 const {colors} = theme;
@@ -123,7 +123,7 @@ function Index({
   }, []);
 
   const onSelect = items => {
-    onFilterProducts({category: items, searchText, groceryListId: id });
+    onFilterProducts({category: items, searchText, groceryListId: id});
   };
 
   const onChange = tempId => {
@@ -169,7 +169,11 @@ function Index({
 
   const onSearch = value => {
     setSearchText(value ? value : '');
-    onFilterProducts({category: filterCategories, searchText: value, groceryListId: id });
+    onFilterProducts({
+      category: filterCategories,
+      searchText: value,
+      groceryListId: id,
+    });
   };
 
   return (
@@ -197,12 +201,14 @@ function Index({
             <Text style={formStyles.btnText}>Cancel</Text>
           </View>
         </IconButton>
-        {id && <IconButton onPress={() => onDelete()}>
-          <View style={flexStyles.flexAlignCenter}>
-            <Icon color="red" name="trash" size={22} />
-            <Text style={formStyles.btnText}>Delete</Text>
-          </View>
-        </IconButton>}
+        {id && (
+          <IconButton onPress={() => onDelete()}>
+            <View style={flexStyles.flexAlignCenter}>
+              <Icon color="red" name="trash" size={22} />
+              <Text style={formStyles.btnText}>Delete</Text>
+            </View>
+          </IconButton>
+        )}
       </View>
       <BadgeFilter
         list={categories}
@@ -253,6 +259,7 @@ const styles = StyleSheet.create({
   groceryContainer: {
     marginTop: 8,
     paddingHorizontal: 12,
+    overflow: 'scroll',  // This fixed the issue with not able to scroll the items list
   },
   checkboxContainer: {
     marginTop: 12,
@@ -356,10 +363,15 @@ const AddEditGroceryList = ({navigation, route}) => {
   };
 
   const onDelete = () => {
-    dispatch(onDeleteGroceryList(id, () => {
-      ToastAndroid.show('Successfully deleted Grocery List', ToastAndroid.SHORT);
-      navigation.navigate(routes.home);
-    }));
+    dispatch(
+      onDeleteGroceryList(id, () => {
+        ToastAndroid.show(
+          'Successfully deleted Grocery List',
+          ToastAndroid.SHORT,
+        );
+        navigation.navigate(routes.home);
+      }),
+    );
   };
 
   return (

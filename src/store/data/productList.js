@@ -127,12 +127,12 @@ const productList = [
   {
     category: 'Groceries',
     name: 'Nalla oil',
-    unit: 'ltr',
+    unit: 'lts',
   },
   {
     category: 'Groceries',
     name: 'jam',
-    unit: 'ltr',
+    unit: 'lts',
   },
   {
     category: 'Groceries',
@@ -142,12 +142,12 @@ const productList = [
   {
     category: 'Groceries',
     name: 'Sun flower oil',
-    unit: 'ltr',
+    unit: 'lts',
   },
   {
     category: 'Groceries',
     name: 'Kadalai oil',
-    unit: 'ltr',
+    unit: 'lts',
   },
   {
     category: 'Groceries',
@@ -307,7 +307,7 @@ const productList = [
   {
     category: 'Groceries',
     name: 'Chilli sause',
-    unit: 'ltr',
+    unit: 'lts',
   },
   {
     category: 'Groceries',
@@ -327,6 +327,11 @@ const productList = [
   {
     category: 'Groceries',
     name: 'Rock salt',
+    unit: 'kg',
+  },
+  {
+    category: 'Groceries',
+    name: 'Oats',
     unit: 'kg',
   },
   {
@@ -382,7 +387,7 @@ const productList = [
   {
     category: 'Groceries',
     name: 'Ghee',
-    unit: 'ltr',
+    unit: 'lts',
   },
   {
     category: 'Groceries',
@@ -392,22 +397,22 @@ const productList = [
   {
     category: 'Groceries',
     name: 'Red Chilli sause',
-    unit: 'ltr',
+    unit: 'lts',
   },
   {
     category: 'Groceries',
     name: 'Tomato sause',
-    unit: 'ltr',
+    unit: 'lts',
   },
   {
     category: 'Groceries',
     name: 'Milk',
-    unit: 'ltr',
+    unit: 'lts',
   },
   {
     category: 'Groceries',
     name: 'Curd',
-    unit: 'ltr',
+    unit: 'lts',
   },
   {
     category: 'Snacks',
@@ -427,6 +432,11 @@ const productList = [
   {
     category: 'House supplies',
     name: 'Balloon',
+    unit: 'count',
+  },
+  {
+    category: 'House supplies',
+    name: 'Comb',
     unit: 'count',
   },
   {
@@ -472,22 +482,22 @@ const productList = [
   {
     category: 'House supplies',
     name: 'Lizol',
-    unit: 'ltr',
+    unit: 'lts',
   },
   {
     category: 'House supplies',
     name: 'Harpic',
-    unit: 'ltr',
+    unit: 'lts',
   },
   {
     category: 'Beauty',
     name: 'Toothpaste',
-    unit: 'ltr',
+    unit: 'lts',
   },
   {
     category: 'Beauty',
     name: 'Toothbrush',
-    unit: 'ltr',
+    unit: 'lts',
   },
 ];
 
